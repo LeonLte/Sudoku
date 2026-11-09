@@ -39,7 +39,7 @@ Kein Build-Schritt nötig, es ist reines HTML, CSS und JavaScript.
 
 ## Entwickeln
 - Lokal starten: `python3 -m http.server 8000` und `http://localhost:8000` öffnen.
-- Tests: `npm test` (Node.js 20+). Laufen auch automatisch auf GitHub bei jedem Push.
+- Tests: `npm test` (Node.js 20+).
 - Nach Änderungen in `sw.js` die `VERSION` erhöhen, damit die Handys die neue Version laden.
 
 ### Schwierigkeitsgrade
