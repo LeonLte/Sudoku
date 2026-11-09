@@ -710,3 +710,6 @@ button svg {
   [data-theme="clover"] .mini-mascot { width: 32px; height: 32px; }
   .tool { font-size: 12px; }
 }
+/* Zeile, Spalte und Block des gewählten Feldes sehen immer gleich aus,
+   egal ob das Feld leer ist oder eine Zahl enthält (keine Schraffur darüber). */
+.cell.related.blocked { background-color: var(--related); background-image: none; }
