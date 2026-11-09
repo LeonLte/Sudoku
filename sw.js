@@ -1,6 +1,6 @@
 // Service worker: keeps a copy of the app so it also works without internet.
 // Increase VERSION whenever files change, so phones fetch the new version.
-const VERSION = 'sudoku-v4';
+const VERSION = 'sudoku-v5';
 const FILES = [
   './',
   'index.html',
@@ -23,7 +23,7 @@ const FILES = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(FILES)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
@@ -35,15 +35,23 @@ self.addEventListener('activate', (event) => {
 });
 
 // Network first (so updates arrive quickly), cache as fallback when offline.
+// "no-cache" makes the browser ask the server every time, so the phone never mixes
+// old and new files (GitHub Pages lets browsers keep files for 10 minutes otherwise).
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== location.origin) return;
+  const request = event.request;
+  if (request.method !== 'GET' || new URL(request.url).origin !== location.origin) return;
+  const fresh = request.mode === 'navigate'
+    ? fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' })
+    : fetch(request, { cache: 'no-cache' });
   event.respondWith(
-    fetch(event.request)
+    fresh
       .then((response) => {
-        const copy = response.clone();
-        caches.open(VERSION).then((cache) => cache.put(event.request, copy));
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(VERSION).then((cache) => cache.put(request, copy));
+        }
         return response;
       })
-      .catch(() => caches.match(event.request, { ignoreSearch: true }))
+      .catch(() => caches.match(request, { ignoreSearch: true }).then((hit) => hit || caches.match('index.html')))
   );
 });
