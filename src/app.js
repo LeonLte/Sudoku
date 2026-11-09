@@ -5,7 +5,7 @@ import {
   remainingDigits, tick, restartGame, abandonGame, hasProgress, MAX_MISTAKES,
 } from './logic/game.js';
 import { recordGame, summary, emptyStats } from './logic/stats.js';
-import { loadGame, saveGame, loadStats, saveStats, loadSettings, saveSettings } from './storage.js';
+import { loadGame, saveGame, loadStats, saveStats, loadSettings, saveSettings, loadImages, saveImages } from './storage.js';
 import { grimoire, magicCircle } from './art.js';
 
 const LABEL = { leicht: 'Leicht', mittel: 'Mittel', schwer: 'Schwer' };
@@ -28,16 +28,87 @@ function applyTheme() {
   $('btn-theme').textContent = `Design: ${THEMES[theme]} · zu ${THEMES[other]} wechseln`;
 }
 
-let moodTimer = null;
-function setMood(mood, ms = 0) {
-  $('game-mascot').innerHTML = grimoire(mood);
-  clearTimeout(moodTimer);
-  if (ms) moodTimer = setTimeout(() => { $('game-mascot').innerHTML = grimoire('normal'); }, ms);
+// ---------- Mascot (drawn book or own pictures) ----------
+let images = loadImages();
+
+function mascot(mood) {
+  const src = images[mood] || images.normal;
+  if (!src) return grimoire(mood);
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = '';
+  img.className = 'own-image';
+  return img.outerHTML;
 }
 
+function renderMascots() {
+  $('menu-mascot').innerHTML = mascot('normal');
+  $('game-mascot').innerHTML = mascot('normal');
+  document.documentElement.classList.toggle('has-own-images', Boolean(images.normal || images.happy || images.sad));
+}
+
+let moodTimer = null;
+function setMood(mood, ms = 0) {
+  $('game-mascot').innerHTML = mascot(mood);
+  clearTimeout(moodTimer);
+  if (ms) moodTimer = setTimeout(() => { $('game-mascot').innerHTML = mascot('normal'); }, ms);
+}
+
+/** Shrinks a picture to at most `max` pixels and returns it as a data URL. */
+function shrinkImage(file, max = 360) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Bild konnte nicht gelesen werden')); };
+    img.src = url;
+  });
+}
+
+function renderImageSlots() {
+  document.querySelectorAll('.slot').forEach((slot) => {
+    const src = images[slot.dataset.mood];
+    slot.querySelector('.slot-preview').innerHTML = src ? `<img src="${src}" alt="">` : grimoire(slot.dataset.mood);
+    slot.querySelector('.slot-remove').hidden = !src;
+  });
+}
+
+document.querySelectorAll('.slot').forEach((slot) => {
+  const mood = slot.dataset.mood;
+  slot.querySelector('input').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const next = { ...images, [mood]: await shrinkImage(file) };
+      if (!saveImages(next)) throw new Error('Kein Speicherplatz');
+      images = next;
+      $('images-note').textContent = 'Gespeichert.';
+    } catch (err) {
+      $('images-note').textContent = `Das hat nicht geklappt: ${err.message}. Versuch ein kleineres Bild.`;
+    }
+    renderImageSlots();
+    renderMascots();
+  });
+  slot.querySelector('.slot-remove').addEventListener('click', () => {
+    images = { ...images };
+    delete images[mood];
+    saveImages(images);
+    renderImageSlots();
+    renderMascots();
+  });
+});
+
 $('menu-circle').innerHTML = magicCircle();
-$('menu-mascot').innerHTML = grimoire('normal');
-$('game-mascot').innerHTML = grimoire('normal');
+renderMascots();
 
 const ui = {
   screen: 'menu',
@@ -266,7 +337,7 @@ function finishGame() {
 function showResult(finished, newRecord) {
   const won = finished.status === 'won';
   const level = summary(stats[finished.difficulty]);
-  $('result-mascot').innerHTML = grimoire(won ? 'happy' : 'sad');
+  $('result-mascot').innerHTML = mascot(won ? 'happy' : 'sad');
   $('result-title').textContent = won ? 'Geschafft! 🍀' : 'Oh nein…';
   $('result-text').textContent = won
     ? `${LABEL[finished.difficulty]} gelöst${level.currentStreak > 1 ? ` · ${level.currentStreak} Siege in Folge` : ''}`
@@ -375,6 +446,12 @@ function renderStats() {
 document.querySelectorAll('[data-new]').forEach((b) => b.addEventListener('click', () => requestNewGame(b.dataset.new)));
 $('btn-continue').addEventListener('click', () => { ui.paused = false; show('game'); });
 $('btn-stats').addEventListener('click', () => show('stats'));
+$('btn-images').addEventListener('click', () => {
+  $('images-note').textContent = 'Fehlt ein Bild für „Freut sich“ oder „Traurig“, wird „Normal“ verwendet.';
+  renderImageSlots();
+  $('images').hidden = false;
+});
+$('btn-images-done').addEventListener('click', () => { $('images').hidden = true; });
 $('btn-theme').addEventListener('click', () => {
   settings.theme = document.documentElement.dataset.theme === 'clover' ? 'classic' : 'clover';
   saveSettings(settings);

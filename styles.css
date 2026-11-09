@@ -633,3 +633,26 @@ button svg {
 @media (prefers-reduced-motion: reduce) {
   [data-theme="clover"] .magic-circle, [data-theme="clover"] .mascot, [data-theme="clover"] .result-mascot { animation: none; }
 }
+
+/* Eigene Bilder fürs Maskottchen */
+#btn-images { display: none; }
+[data-theme="clover"] #btn-images { display: flex; }
+.own-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.image-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.slot { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.slot-preview {
+  width: 76px;
+  height: 76px;
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.slot-preview img, .slot-preview svg { display: block; width: 100%; height: 100%; object-fit: contain; }
+.slot .btn { min-height: 34px; padding: 4px 10px; font-size: 13px; cursor: pointer; }
+.images-note { font-size: 13px; }
+[data-theme="clover"] .slot-preview { border: 3px solid var(--ink); }
+[data-theme="clover"] .dialog .slot .btn { box-shadow: 0 2px 0 var(--ink); border-width: 2px; }
+[data-theme="clover"] .dialog .slot .btn-ghost { box-shadow: none; }
+/* eigene Bilder brauchen etwas mehr Platz im Kopfbereich */
+.has-own-images[data-theme="clover"] .mini-mascot { width: 44px; height: 44px; }
+.has-own-images[data-theme="clover"] .mini-mascot img { border-radius: 10px; }

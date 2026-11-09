@@ -21,6 +21,8 @@ Danach startet die App wie eine normale App im Vollbild. Spielstand und Statisti
 - Hell- und Dunkelmodus folgen der iPhone-Einstellung.
 - Zwei Designs, umschaltbar im Menü: **Kleeblatt** (niedlicher Chibi-Comic-Stil mit Pastellfarben und einem kleinen Zauberbuch-Maskottchen, das sich über richtige Zahlen freut und bei Fehlern traurig schaut) und **Klassisch**.
 
+- **Eigene Bilder fürs Maskottchen** (im Kleeblatt-Design): drei Plätze für normal, freut sich und traurig. Die Bilder werden verkleinert und nur auf dem Handy gespeichert, nie im Repository.
+
 Alle Zeichnungen sind eigens für diese App gemacht (`src/art.js`). Die Schriften *Mochiy Pop One* und *Fredoka* stehen unter der SIL Open Font License (siehe `fonts/LICENSE.md`).
 
 Wer ein laufendes Spiel abbricht, um ein neues zu starten, bekommt es als verloren gewertet (nach Rückfrage).

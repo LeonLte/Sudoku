@@ -4,7 +4,7 @@
 
 import { emptyStats } from './logic/stats.js';
 
-const KEYS = { game: 'sudoku.game.v1', stats: 'sudoku.stats.v1', settings: 'sudoku.settings.v1' };
+const KEYS = { game: 'sudoku.game.v1', stats: 'sudoku.stats.v1', settings: 'sudoku.settings.v1', images: 'sudoku.images.v1' };
 
 function read(key, fallback) {
   try {
@@ -19,8 +19,9 @@ function write(key, value) {
   try {
     if (value === null) localStorage.removeItem(key);
     else localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch {
-    /* storage not available */
+    return false; /* storage not available or full */
   }
 }
 
@@ -32,3 +33,7 @@ export const saveStats = (stats) => write(KEYS.stats, stats);
 
 export const loadSettings = () => ({ statsTab: 'mittel', theme: 'clover', ...read(KEYS.settings, {}) });
 export const saveSettings = (settings) => write(KEYS.settings, settings);
+
+// Own mascot pictures as data URLs: { normal, happy, sad }. Only on this device.
+export const loadImages = () => read(KEYS.images, {});
+export const saveImages = (images) => write(KEYS.images, images);

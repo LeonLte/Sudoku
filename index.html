@@ -46,6 +46,7 @@
         <button class="btn" data-new="schwer">Schwer</button>
       </div>
       <button id="btn-stats" class="btn btn-ghost">Statistiken</button>
+      <button id="btn-images" class="btn btn-ghost btn-small">Eigene Bilder fürs Maskottchen</button>
       <button id="btn-theme" class="btn btn-ghost btn-small"></button>
     </div>
   </section>
@@ -122,6 +123,35 @@
         <button id="btn-result-retry" class="btn">Nochmal versuchen</button>
         <button id="btn-result-new" class="btn btn-primary">Neues Spiel</button>
         <button id="btn-result-menu" class="btn btn-ghost">Zum Menü</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Eigene Bilder -->
+  <div id="images" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="images-title">
+      <h2 id="images-title">Eigene Bilder</h2>
+      <p>Diese Bilder ersetzen das Zauberbuch. Sie bleiben nur auf diesem Handy.</p>
+      <div class="image-slots">
+        <div class="slot" data-mood="normal">
+          <div class="slot-preview"></div><span>Normal</span>
+          <label class="btn btn-small">Wählen<input type="file" accept="image/*" hidden></label>
+          <button class="btn btn-ghost btn-small slot-remove">Entfernen</button>
+        </div>
+        <div class="slot" data-mood="happy">
+          <div class="slot-preview"></div><span>Freut sich</span>
+          <label class="btn btn-small">Wählen<input type="file" accept="image/*" hidden></label>
+          <button class="btn btn-ghost btn-small slot-remove">Entfernen</button>
+        </div>
+        <div class="slot" data-mood="sad">
+          <div class="slot-preview"></div><span>Traurig</span>
+          <label class="btn btn-small">Wählen<input type="file" accept="image/*" hidden></label>
+          <button class="btn btn-ghost btn-small slot-remove">Entfernen</button>
+        </div>
+      </div>
+      <p id="images-note" class="images-note">Fehlt ein Bild für „Freut sich“ oder „Traurig“, wird „Normal“ verwendet.</p>
+      <div class="dialog-buttons">
+        <button id="btn-images-done" class="btn btn-primary">Fertig</button>
       </div>
     </div>
   </div>
