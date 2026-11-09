@@ -278,7 +278,7 @@ button svg {
 /* ---------- Tools & keypad ---------- */
 .tools {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -703,4 +703,10 @@ button svg {
   [data-theme="clover"] .game-bubble { margin-top: 6px; padding: 4px 10px; font-size: 12px; border-width: 2px; }
   [data-theme="clover"] .board-wrap { margin-bottom: 10px; }
   [data-theme="clover"] .num { height: 50px; }
+}
+.info span { white-space: nowrap; }
+@media (max-width: 380px) {
+  .info { font-size: 13px; gap: 4px; }
+  [data-theme="clover"] .mini-mascot { width: 32px; height: 32px; }
+  .tool { font-size: 12px; }
 }

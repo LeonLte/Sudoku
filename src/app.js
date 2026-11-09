@@ -228,6 +228,13 @@ for (let d = 1; d <= 9; d++) {
 function renderGame() {
   if (!game) return;
   const h = getHighlights(game, ui.digitFocus);
+  if (settings.highlight === false) {
+    // Markieren aus: nur das gewählte Feld zeigen, keine gleichen Zahlen und keine Sperrfelder.
+    h.related = [];
+    h.sameNumber = [];
+    h.blocked = [];
+    h.digit = null;
+  }
   const related = new Set(h.related);
   const same = new Set(h.sameNumber);
   const blocked = new Set(h.blocked);
@@ -278,6 +285,8 @@ function renderGame() {
   $('info-time').textContent = formatTime(game.elapsedSeconds);
   $('btn-notes').setAttribute('aria-pressed', String(ui.notesMode));
   $('notes-state').textContent = ui.notesMode ? 'an' : 'aus';
+  $('btn-highlight').setAttribute('aria-pressed', String(settings.highlight !== false));
+  $('highlight-state').textContent = settings.highlight !== false ? 'an' : 'aus';
   $('hint-count').textContent = game.hintsUsed ? `(${game.hintsUsed})` : '';
   $('pause-overlay').hidden = !ui.paused;
   board.style.visibility = ui.paused ? 'hidden' : '';
@@ -525,6 +534,11 @@ $('btn-resume').addEventListener('click', () => setPaused(false));
 $('btn-erase').addEventListener('click', onErase);
 $('btn-hint').addEventListener('click', onHint);
 $('btn-notes').addEventListener('click', () => { ui.notesMode = !ui.notesMode; renderGame(); });
+$('btn-highlight').addEventListener('click', () => {
+  settings.highlight = settings.highlight === false;
+  saveSettings(settings);
+  renderGame();
+});
 document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => {
   settings.statsTab = b.dataset.tab;
   saveSettings(settings);
