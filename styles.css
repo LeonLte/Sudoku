@@ -72,7 +72,7 @@ button {
   touch-action: manipulation;
 }
 
-svg {
+button svg {
   width: 24px;
   height: 24px;
   fill: none;
@@ -387,4 +387,249 @@ svg {
   .num { height: 54px; }
   .tools { margin-bottom: 8px; }
   .board-wrap { margin-bottom: 8px; }
+}
+
+/* =====================================================================
+   Design „Kleeblatt“: niedlicher Chibi-Comic-Stil mit Pastellfarben,
+   dicken Konturen und eigenen Zeichnungen (src/art.js).
+   ===================================================================== */
+@font-face {
+  font-family: "Mochiy Pop One";
+  src: url("fonts/mochiy-pop-one.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fredoka";
+  src: url("fonts/fredoka.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+/* Elemente, die nur das Kleeblatt-Design zeigt */
+.mascot-stage, .subtitle, .mini-mascot, .result-mascot { display: none; }
+
+:root[data-theme="clover"] {
+  --bg: #fff5e9;
+  --surface: #fffdf8;
+  --text: #3b2a3f;
+  --muted: #8a7690;
+  --line: #ecd9e4;
+  --line-strong: #3b2a3f;
+  --accent: #ff6f9f;
+  --accent-text: #ffffff;
+  --given: #3b2a3f;
+  --entered: #25a066;
+  --related: #fff0d6;
+  --blocked: #ffc9dc;
+  --same: #c6f0d6;
+  --selected: #ffd76b;
+  --error: #e5484d;
+  --error-bg: #ffd9de;
+  --hint: #7a5cff;
+  --ink: #3b2a3f;
+  --pop: 0 4px 0 var(--ink);
+  --pattern: url("img/pattern.svg");
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="clover"] {
+    --bg: #231a2e;
+    --surface: #30253d;
+    --text: #fbeefc;
+    --muted: #b7a4c0;
+    --line: #4a3b58;
+    --line-strong: #f3dff5;
+    --accent: #ff8fb3;
+    --accent-text: #231a2e;
+    --given: #fbeefc;
+    --entered: #7fe3ae;
+    --related: #3b2f4a;
+    --blocked: #5b3550;
+    --same: #2f5a45;
+    --selected: #8a6a2a;
+    --error: #ff7b80;
+    --error-bg: #5a2a33;
+    --hint: #b3a2ff;
+    --ink: #c9a8d6;
+    --pattern: url("img/pattern-dark.svg");
+  }
+}
+
+[data-theme="clover"] body {
+  font-family: "Fredoka", -apple-system, sans-serif;
+  background-color: var(--bg);
+  background-image: var(--pattern);
+  background-size: 140px 140px;
+}
+
+/* Menü */
+[data-theme="clover"] .logo { display: none; }
+[data-theme="clover"] .mascot-stage {
+  display: block;
+  position: relative;
+  width: 210px;
+  height: 210px;
+  margin: 0 auto;
+}
+[data-theme="clover"] .magic-circle {
+  position: absolute;
+  inset: -10px;
+  color: var(--accent);
+  opacity: 0.35;
+  animation: spin 40s linear infinite;
+}
+.mascot svg, .mini-mascot svg, .result-mascot svg, .magic-circle svg { display: block; width: 100%; height: 100%; }
+[data-theme="clover"] .mascot {
+  position: absolute;
+  inset: 22px;
+  animation: bob 2.4s ease-in-out infinite;
+}
+[data-theme="clover"] .bubble {
+  position: absolute;
+  top: 0;
+  left: 168px;
+  width: max-content;
+  max-width: 120px;
+  padding: 8px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 18px 18px 18px 4px;
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--ink);
+  font-family: "Mochiy Pop One", sans-serif;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--text);
+  transform: rotate(4deg);
+  animation: pop 0.5s;
+}
+[data-theme="clover"] .menu h1 {
+  margin: 0;
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  font-size: 46px;
+  color: var(--accent);
+  -webkit-text-stroke: 2px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 4px 0 var(--ink);
+  transform: rotate(-3deg);
+}
+[data-theme="clover"] .subtitle {
+  display: block;
+  margin: 0 0 14px;
+  text-align: center;
+  font-family: "Mochiy Pop One", sans-serif;
+  font-size: 15px;
+  color: var(--entered);
+}
+[data-theme="clover"] .menu-label { font-weight: 600; }
+
+/* Buttons im Sticker-Look */
+[data-theme="clover"] .btn {
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--pop);
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+}
+[data-theme="clover"] .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+[data-theme="clover"] .difficulty-buttons .btn:nth-child(1) { background: #c6f0d6; color: #3b2a3f; }
+[data-theme="clover"] .difficulty-buttons .btn:nth-child(2) { background: #ffe08a; color: #3b2a3f; }
+[data-theme="clover"] .difficulty-buttons .btn:nth-child(3) { background: #ffb3c7; color: #3b2a3f; }
+[data-theme="clover"] .btn-ghost { border: 0; box-shadow: none; background: transparent; color: var(--accent); }
+[data-theme="clover"] .btn-small { font-family: "Fredoka", sans-serif; font-weight: 500; }
+
+/* Spielfeld */
+[data-theme="clover"] .info { align-items: center; font-weight: 500; }
+[data-theme="clover"] #info-difficulty { font-family: "Mochiy Pop One", sans-serif; font-weight: 400; }
+[data-theme="clover"] .mini-mascot {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: -4px 0;
+}
+[data-theme="clover"] .board {
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 0 6px 0 var(--ink);
+}
+[data-theme="clover"] .board-wrap { margin-bottom: 18px; }
+[data-theme="clover"] .cell {
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  font-size: clamp(18px, 6vw, 29px);
+}
+[data-theme="clover"] .cell.given { font-weight: 400; }
+[data-theme="clover"] .cell.c2, [data-theme="clover"] .cell.c5 { border-right: 3px solid var(--ink); }
+[data-theme="clover"] .cell.r2, [data-theme="clover"] .cell.r5 { border-bottom: 3px solid var(--ink); }
+[data-theme="clover"] .notes span { font-family: "Fredoka", sans-serif; font-weight: 600; }
+[data-theme="clover"] .pause-overlay {
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+}
+
+/* Werkzeuge und Zahlenfeld */
+[data-theme="clover"] .tool { font-weight: 500; color: var(--text); }
+[data-theme="clover"] .tool svg { stroke-width: 2.4; }
+[data-theme="clover"] .tool[aria-pressed="true"] { color: var(--accent); }
+[data-theme="clover"] .numpad { gap: 5px; }
+[data-theme="clover"] .num {
+  height: 60px;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 3px 0 var(--ink);
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  font-size: clamp(18px, 6vw, 25px);
+  color: var(--entered);
+}
+[data-theme="clover"] .num small { font-family: "Fredoka", sans-serif; font-weight: 600; }
+[data-theme="clover"] .num:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+[data-theme="clover"] .num.focus { background: var(--same); }
+
+/* Statistiken */
+[data-theme="clover"] .tabs { border: 3px solid var(--ink); background: var(--surface); }
+[data-theme="clover"] .tabs button { font-family: "Mochiy Pop One", sans-serif; font-weight: 400; }
+[data-theme="clover"] .tabs button[aria-selected="true"] { background: var(--selected); color: #3b2a3f; box-shadow: none; }
+[data-theme="clover"] .stat {
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 3px 0 var(--ink);
+}
+[data-theme="clover"] .stat .value { font-family: "Mochiy Pop One", sans-serif; font-weight: 400; font-size: 24px; }
+[data-theme="clover"] .stat:nth-child(4n+1) .value { color: var(--entered); }
+[data-theme="clover"] .stat:nth-child(4n+2) .value { color: var(--accent); }
+[data-theme="clover"] .stat:nth-child(4n+3) .value { color: #e0a100; }
+[data-theme="clover"] .stat:nth-child(4n) .value { color: var(--hint); }
+[data-theme="clover"] .info .title { font-family: "Mochiy Pop One", sans-serif; font-weight: 400; }
+
+/* Dialoge */
+[data-theme="clover"] .dialog {
+  border: 4px solid var(--ink);
+  border-radius: 26px;
+  box-shadow: 0 6px 0 var(--ink);
+}
+[data-theme="clover"] .result-mascot {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: -78px auto 4px;
+  animation: bob 2s ease-in-out infinite;
+}
+[data-theme="clover"] .dialog h2 {
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  color: var(--accent);
+}
+[data-theme="clover"] .facts div { border: 3px solid var(--ink); border-radius: 14px; }
+[data-theme="clover"] .facts b { font-family: "Mochiy Pop One", sans-serif; font-weight: 400; }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="clover"] .magic-circle, [data-theme="clover"] .mascot, [data-theme="clover"] .result-mascot { animation: none; }
 }

@@ -30,5 +30,5 @@ export const saveGame = (game) => write(KEYS.game, game);
 export const loadStats = () => ({ ...emptyStats(), ...read(KEYS.stats, {}) });
 export const saveStats = (stats) => write(KEYS.stats, stats);
 
-export const loadSettings = () => ({ statsTab: 'mittel', ...read(KEYS.settings, {}) });
+export const loadSettings = () => ({ statsTab: 'mittel', theme: 'clover', ...read(KEYS.settings, {}) });
 export const saveSettings = (settings) => write(KEYS.settings, settings);

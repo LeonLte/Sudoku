@@ -6,6 +6,7 @@ import {
 } from './logic/game.js';
 import { recordGame, summary, emptyStats } from './logic/stats.js';
 import { loadGame, saveGame, loadStats, saveStats, loadSettings, saveSettings } from './storage.js';
+import { grimoire, magicCircle } from './art.js';
 
 const LABEL = { leicht: 'Leicht', mittel: 'Mittel', schwer: 'Schwer' };
 const $ = (id) => document.getElementById(id);
@@ -15,6 +16,28 @@ let game = loadGame();
 if (game && (game.status !== 'playing' || !Array.isArray(game.values))) game = null;
 let stats = loadStats();
 const settings = loadSettings();
+
+// ---------- Design (Kleeblatt / Klassisch) ----------
+const THEMES = { clover: 'Kleeblatt', classic: 'Klassisch' };
+const BUBBLES = ['Los geht\'s!', 'Ein Rätsel gefällig?', 'Heute wird geknobelt!', 'Du schaffst das!', 'Glück gehabt? Nein, Können!'];
+
+function applyTheme() {
+  const theme = THEMES[settings.theme] ? settings.theme : 'clover';
+  document.documentElement.dataset.theme = theme;
+  const other = theme === 'clover' ? 'classic' : 'clover';
+  $('btn-theme').textContent = `Design: ${THEMES[theme]} · zu ${THEMES[other]} wechseln`;
+}
+
+let moodTimer = null;
+function setMood(mood, ms = 0) {
+  $('game-mascot').innerHTML = grimoire(mood);
+  clearTimeout(moodTimer);
+  if (ms) moodTimer = setTimeout(() => { $('game-mascot').innerHTML = grimoire('normal'); }, ms);
+}
+
+$('menu-circle').innerHTML = magicCircle();
+$('menu-mascot').innerHTML = grimoire('normal');
+$('game-mascot').innerHTML = grimoire('normal');
 
 const ui = {
   screen: 'menu',
@@ -54,6 +77,7 @@ function show(screen) {
 }
 
 function renderMenu() {
+  $('menu-bubble').textContent = BUBBLES[Math.floor(Math.random() * BUBBLES.length)];
   const canContinue = game && game.status === 'playing';
   $('btn-continue').hidden = !canContinue;
   if (canContinue) $('continue-info').textContent = `${LABEL[game.difficulty]} · ${formatTime(game.elapsedSeconds)}`;
@@ -182,8 +206,10 @@ function onDigit(d) {
   if (result === 'correct') {
     vibrate(10);
     animate(i, 'correct', 300);
+    setMood('happy', 900);
   } else if (result === 'wrong') {
     vibrate([40, 40, 40]);
+    setMood('sad', 1400);
     ui.flash = { cell: i, digit: d };
     setTimeout(() => { ui.flash = null; renderGame(); }, 900);
   }
@@ -240,7 +266,8 @@ function finishGame() {
 function showResult(finished, newRecord) {
   const won = finished.status === 'won';
   const level = summary(stats[finished.difficulty]);
-  $('result-title').textContent = won ? 'Geschafft! 🎉' : 'Leider verloren';
+  $('result-mascot').innerHTML = grimoire(won ? 'happy' : 'sad');
+  $('result-title').textContent = won ? 'Geschafft! 🍀' : 'Oh nein…';
   $('result-text').textContent = won
     ? `${LABEL[finished.difficulty]} gelöst${level.currentStreak > 1 ? ` · ${level.currentStreak} Siege in Folge` : ''}`
     : `${MAX_MISTAKES} Fehler – das Spiel ist vorbei.`;
@@ -259,6 +286,7 @@ let resultGame = null;
 
 // ---------- Starting games ----------
 function startGame(difficulty) {
+  setMood('normal');
   ui.notesMode = false;
   ui.paused = false;
   ui.digitFocus = null;
@@ -347,6 +375,11 @@ function renderStats() {
 document.querySelectorAll('[data-new]').forEach((b) => b.addEventListener('click', () => requestNewGame(b.dataset.new)));
 $('btn-continue').addEventListener('click', () => { ui.paused = false; show('game'); });
 $('btn-stats').addEventListener('click', () => show('stats'));
+$('btn-theme').addEventListener('click', () => {
+  settings.theme = document.documentElement.dataset.theme === 'clover' ? 'classic' : 'clover';
+  saveSettings(settings);
+  applyTheme();
+});
 $('btn-stats-back').addEventListener('click', () => show('menu'));
 $('btn-menu').addEventListener('click', () => show('menu'));
 $('btn-pause').addEventListener('click', () => setPaused(true));
@@ -399,4 +432,5 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('sw.js').catch(() => { /* offline mode not available */ });
 }
 
+applyTheme();
 show('menu');

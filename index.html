@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <title>Sudoku</title>
   <meta name="description" content="Sudoku mit drei Schwierigkeitsgraden, Hinweisen und Statistiken.">
-  <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fff5e9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#231a2e" media="(prefers-color-scheme: dark)">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,16 +14,30 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/mochiy-pop-one.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Apply the chosen design before the page is drawn (no flicker).
+    try {
+      const s = JSON.parse(localStorage.getItem('sudoku.settings.v1') || '{}');
+      document.documentElement.dataset.theme = s.theme || 'clover';
+    } catch { document.documentElement.dataset.theme = 'clover'; }
+  </script>
 </head>
 <body>
   <!-- Startbildschirm -->
   <section id="screen-menu" class="screen" hidden>
     <div class="menu">
+      <div class="mascot-stage">
+        <div id="menu-circle" class="magic-circle"></div>
+        <div id="menu-mascot" class="mascot"></div>
+        <div id="menu-bubble" class="bubble"></div>
+      </div>
       <div class="logo" aria-hidden="true">
         <span>5</span><span></span><span>3</span><span></span><span>7</span><span></span><span>9</span><span></span><span>1</span>
       </div>
       <h1>Sudoku</h1>
+      <p class="subtitle">Kleeblatt-Edition</p>
       <button id="btn-continue" class="btn btn-primary" hidden>Weiterspielen<small id="continue-info"></small></button>
       <p class="menu-label">Neues Spiel</p>
       <div class="difficulty-buttons">
@@ -32,6 +46,7 @@
         <button class="btn" data-new="schwer">Schwer</button>
       </div>
       <button id="btn-stats" class="btn btn-ghost">Statistiken</button>
+      <button id="btn-theme" class="btn btn-ghost btn-small"></button>
     </div>
   </section>
 
@@ -42,6 +57,7 @@
         <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
       <div class="info">
+        <span id="game-mascot" class="mini-mascot"></span>
         <span id="info-difficulty"></span>
         <span id="info-mistakes" aria-live="polite"></span>
         <span id="info-time"></span>
@@ -98,6 +114,7 @@
   <!-- Ergebnis -->
   <div id="result" class="dialog-backdrop" hidden>
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="result-title">
+      <div id="result-mascot" class="result-mascot"></div>
       <h2 id="result-title"></h2>
       <p id="result-text"></p>
       <div id="result-facts" class="facts"></div>

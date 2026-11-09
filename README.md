@@ -19,6 +19,9 @@ Danach startet die App wie eine normale App im Vollbild. Spielstand und Statisti
 - Timer mit **Pause** (pausiert auch automatisch beim Verlassen der App).
 - **Statistiken** pro Schwierigkeitsgrad: gespielt, gewonnen, Gewinnquote, perfekte Spiele, Bestzeit, Ø Zeit, aktuelle und längste Siegesserie, Ø Fehler, genutzte Hinweise.
 - Hell- und Dunkelmodus folgen der iPhone-Einstellung.
+- Zwei Designs, umschaltbar im Menü: **Kleeblatt** (niedlicher Chibi-Comic-Stil mit Pastellfarben und einem kleinen Zauberbuch-Maskottchen, das sich über richtige Zahlen freut und bei Fehlern traurig schaut) und **Klassisch**.
+
+Alle Zeichnungen sind eigens für diese App gemacht (`src/art.js`). Die Schriften *Mochiy Pop One* und *Fredoka* stehen unter der SIL Open Font License (siehe `fonts/LICENSE.md`).
 
 Wer ein laufendes Spiel abbricht, um ein neues zu starten, bekommt es als verloren gewertet (nach Rückfrage).
 
@@ -27,12 +30,13 @@ Wer ein laufendes Spiel abbricht, um ein neues zu starten, bekommt es als verlor
 |---|---|
 | `index.html`, `styles.css` | Seite und Design |
 | `src/app.js` | Bedienung: verbindet Spiellogik und Oberfläche |
+| `src/art.js` | Eigene Zeichnungen (Maskottchen, Kleeblatt, Magiekreis) als SVG |
 | `src/storage.js` | Speichern auf dem Gerät (localStorage) |
 | `src/logic/sudoku.js` | Löser, Generator, Schwierigkeitsbewertung |
 | `src/logic/game.js` | Spielregeln: Eingabe, Fehler, Hinweise, Notizen, Highlighting, Timer |
 | `src/logic/stats.js` | Statistiken |
 | `src/logic/random.js` | Zufallsgenerator mit Seed |
-| `sw.js`, `manifest.webmanifest`, `icons/` | Offline-Fähigkeit und App-Symbol |
+| `sw.js`, `manifest.webmanifest`, `icons/`, `img/`, `fonts/` | Offline-Fähigkeit und App-Symbol |
 | `test/` | Automatische Tests |
 
 Kein Build-Schritt nötig, es ist reines HTML, CSS und JavaScript.
