@@ -611,11 +611,12 @@ button svg {
 }
 [data-theme="clover"] .result-mascot {
   display: block;
-  width: 120px;
-  height: 120px;
-  margin: -78px auto 4px;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 6px;
   animation: bob 2s ease-in-out infinite;
 }
+.result-mascot .own-image { border-radius: 16px; }
 [data-theme="clover"] .dialog h2 {
   font-family: "Mochiy Pop One", sans-serif;
   font-weight: 400;
@@ -671,3 +672,31 @@ button svg {
 }
 .dialog { max-height: calc(100dvh - 48px); overflow-y: auto; }
 #images .dialog { padding-top: 20px; }
+
+/* Sprechblase im Spiel */
+.game-bubble { display: none; }
+[data-theme="clover"] .game-bubble {
+  display: block;
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 54px);
+  left: 50%;
+  z-index: 5;
+  max-width: 260px;
+  padding: 8px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--ink);
+  font-family: "Mochiy Pop One", sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--text);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -6px) scale(0.9);
+  transition: opacity 0.2s, transform 0.2s;
+}
+[data-theme="clover"] .game-bubble.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+[data-theme="clover"] .game-bubble.bad { background: #ffe1e6; color: #3b2a3f; }
+.reset-images { margin-top: 4px; }

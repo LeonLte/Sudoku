@@ -19,7 +19,55 @@ const settings = loadSettings();
 
 // ---------- Design (Kleeblatt / Klassisch) ----------
 const THEMES = { clover: 'Kleeblatt', classic: 'Klassisch' };
-const BUBBLES = ['Los geht\'s!', 'Ein Rätsel gefällig?', 'Heute wird geknobelt!', 'Du schaffst das!', 'Glück gehabt? Nein, Können!'];
+// Sprüche des Maskottchens: kleine Chibi-Gags mit viel (übertriebener) Entschlossenheit.
+const LINES = {
+  menu: [
+    'Heute löse ich ALLE Sudokus! …nach einem Snack.',
+    'Ich trainiere seit drei Minuten. Ich bin unbesiegbar!',
+    'Neun Zahlen? Pah! Ich zähle locker bis zehn!',
+    'Ich hab extra meine Glücks-Socken an!',
+    'Aufgeben? Kenn ich nicht! …Wie schreibt man das überhaupt?',
+    'Psst… ich glaub, die 7 hat Angst vor dir.',
+    'Mein Plan: Zahlen reinschreiben. Genial, oder?',
+    'Niemals aufgeben! Außer beim Gemüse.',
+    'Mein Zahlen-Zauber ist bereit! Glaube ich.',
+    'Ich bin klein, aber meine Entschlossenheit ist RIESIG!',
+  ],
+  correct: [
+    'Volltreffer!', 'Hab ich doch gesagt!', 'Die Zahl fühlt sich da sehr wohl!',
+    'Ich wusste es! …ungefähr.', 'Genial! Fast so genial wie ich!', 'Zack! Wie ein Profi!',
+  ],
+  wrong: [
+    'AUTSCH! Das war nur ein Test!', 'Die Zahl war bestimmt verkleidet!', 'Ich hab nix gesehen! Gar nix!',
+    'Das zählt nicht, ich hab geblinzelt!', 'Ich weine nicht! Mir ist nur ein Kleeblatt ins Auge geflogen!',
+    'Kein Problem! Das war mein geheimer Plan… glaube ich.',
+  ],
+  lastChance: ['Noch EIN Fehler und ich fall in Ohnmacht!', 'Ganz ruhig… ICH bin ganz ruhig! AAAH!'],
+  hint: ['Psst, ich verrat\'s nur dir!', 'Hier! Aber nicht weitersagen!', 'Ich hab heimlich gespickt!'],
+  won: [
+    'UNGLAUBLICH! Ich hab keine Sekunde gezweifelt! (Doch. Ganz viele.)',
+    'Sieg! Das feiern wir mit drei Portionen Nachtisch!',
+    'Ich bin so stolz, ich platze gleich vor Glück!',
+    'Wer ist der Champion? DU! Und ein bisschen ich.',
+  ],
+  lost: [
+    'Das… war nur ein Aufwärmspiel! Ja, genau.',
+    'Wir haben nicht verloren. Wir haben nur nicht gewonnen!',
+    'Ich komme stärker zurück! Morgen. Oder gleich.',
+    'Niemals aufgeben! Nochmal, nochmal, NOCHMAL!',
+  ],
+};
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+let bubbleTimer = null;
+function say(text, bad = false) {
+  const bubble = $('game-bubble');
+  bubble.textContent = text;
+  bubble.classList.toggle('bad', bad);
+  bubble.classList.add('show');
+  clearTimeout(bubbleTimer);
+  bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2000);
+}
 
 function applyTheme() {
   const theme = THEMES[settings.theme] ? settings.theme : 'clover';
@@ -148,7 +196,7 @@ function show(screen) {
 }
 
 function renderMenu() {
-  $('menu-bubble').textContent = BUBBLES[Math.floor(Math.random() * BUBBLES.length)];
+  $('menu-bubble').textContent = pick(LINES.menu);
   const canContinue = game && game.status === 'playing';
   $('btn-continue').hidden = !canContinue;
   if (canContinue) $('continue-info').textContent = `${LABEL[game.difficulty]} · ${formatTime(game.elapsedSeconds)}`;
@@ -278,9 +326,11 @@ function onDigit(d) {
     vibrate(10);
     animate(i, 'correct', 300);
     setMood('happy', 900);
+    if (game.status === 'playing' && Math.random() < 0.25) say(pick(LINES.correct));
   } else if (result === 'wrong') {
     vibrate([40, 40, 40]);
     setMood('sad', 1400);
+    if (game.status === 'playing') say(pick(game.mistakes === MAX_MISTAKES - 1 ? LINES.lastChance : LINES.wrong), true);
     ui.flash = { cell: i, digit: d };
     setTimeout(() => { ui.flash = null; renderGame(); }, 900);
   }
@@ -302,7 +352,8 @@ function onHint() {
   setGame(next);
   animate(cell, 'hinted', 600);
   renderGame();
-  if (game.status !== 'playing') finishGame();
+  if (game.status === 'playing') say(pick(LINES.hint));
+  else finishGame();
 }
 
 function moveSelection(dr, dc) {
@@ -342,6 +393,9 @@ function showResult(finished, newRecord) {
   $('result-text').textContent = won
     ? `${LABEL[finished.difficulty]} gelöst${level.currentStreak > 1 ? ` · ${level.currentStreak} Siege in Folge` : ''}`
     : `${MAX_MISTAKES} Fehler – das Spiel ist vorbei.`;
+  if (document.documentElement.dataset.theme === 'clover') {
+    $('result-text').textContent = `${pick(won ? LINES.won : LINES.lost)} · ${$('result-text').textContent}`;
+  }
   $('result-facts').innerHTML = [
     [formatTime(finished.elapsedSeconds), newRecord ? 'Neue Bestzeit!' : 'Zeit', newRecord],
     [formatTime(level.bestTime), 'Bestzeit'],
@@ -452,6 +506,13 @@ $('btn-images').addEventListener('click', () => {
   $('images').hidden = false;
 });
 $('btn-images-done').addEventListener('click', () => { $('images').hidden = true; });
+$('btn-images-reset').addEventListener('click', () => {
+  images = {};
+  saveImages(null);
+  renderImageSlots();
+  renderMascots();
+  $('images-note').textContent = 'Zurückgesetzt: Das Zauberbuch ist wieder da.';
+});
 $('btn-theme').addEventListener('click', () => {
   settings.theme = document.documentElement.dataset.theme === 'clover' ? 'classic' : 'clover';
   saveSettings(settings);

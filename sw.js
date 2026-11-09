@@ -1,6 +1,6 @@
 // Service worker: keeps a copy of the app so it also works without internet.
 // Increase VERSION whenever files change, so phones fetch the new version.
-const VERSION = 'sudoku-v5';
+const VERSION = 'sudoku-v6';
 const FILES = [
   './',
   'index.html',
