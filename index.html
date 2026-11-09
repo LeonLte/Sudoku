@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Sudoku</title>
+  <meta name="description" content="Sudoku mit drei Schwierigkeitsgraden, Hinweisen und Statistiken.">
+  <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Sudoku">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Startbildschirm -->
+  <section id="screen-menu" class="screen" hidden>
+    <div class="menu">
+      <div class="logo" aria-hidden="true">
+        <span>5</span><span></span><span>3</span><span></span><span>7</span><span></span><span>9</span><span></span><span>1</span>
+      </div>
+      <h1>Sudoku</h1>
+      <button id="btn-continue" class="btn btn-primary" hidden>Weiterspielen<small id="continue-info"></small></button>
+      <p class="menu-label">Neues Spiel</p>
+      <div class="difficulty-buttons">
+        <button class="btn" data-new="leicht">Leicht</button>
+        <button class="btn" data-new="mittel">Mittel</button>
+        <button class="btn" data-new="schwer">Schwer</button>
+      </div>
+      <button id="btn-stats" class="btn btn-ghost">Statistiken</button>
+    </div>
+  </section>
+
+  <!-- Spielbildschirm -->
+  <section id="screen-game" class="screen" hidden>
+    <header class="topbar">
+      <button id="btn-menu" class="icon-btn" aria-label="Menü">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="info">
+        <span id="info-difficulty"></span>
+        <span id="info-mistakes" aria-live="polite"></span>
+        <span id="info-time"></span>
+      </div>
+      <button id="btn-pause" class="icon-btn" aria-label="Pause">
+        <svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg>
+      </button>
+    </header>
+
+    <div class="board-wrap">
+      <div id="board" class="board" role="grid" aria-label="Sudoku-Spielfeld"></div>
+      <div id="pause-overlay" class="pause-overlay" hidden>
+        <p>Pausiert</p>
+        <button id="btn-resume" class="btn btn-primary">Weiter</button>
+      </div>
+    </div>
+
+    <div class="tools">
+      <button id="btn-erase" class="tool">
+        <svg viewBox="0 0 24 24"><path d="M20 20H9L4 15l10-10 7 7-7 7"/><path d="M8 11l6 6"/></svg>
+        <span>Löschen</span>
+      </button>
+      <button id="btn-notes" class="tool" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+        <span>Notizen <b id="notes-state">aus</b></span>
+      </button>
+      <button id="btn-hint" class="tool">
+        <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>
+        <span>Hinweis <b id="hint-count"></b></span>
+      </button>
+    </div>
+
+    <div id="numpad" class="numpad"></div>
+  </section>
+
+  <!-- Statistiken -->
+  <section id="screen-stats" class="screen" hidden>
+    <header class="topbar">
+      <button id="btn-stats-back" class="icon-btn" aria-label="Zurück">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="info"><span class="title">Statistiken</span></div>
+      <span class="icon-btn" aria-hidden="true"></span>
+    </header>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="leicht">Leicht</button>
+      <button role="tab" data-tab="mittel">Mittel</button>
+      <button role="tab" data-tab="schwer">Schwer</button>
+    </div>
+    <div id="stats-grid" class="stats-grid"></div>
+    <button id="btn-reset-stats" class="btn btn-ghost btn-small">Statistik zurücksetzen</button>
+  </section>
+
+  <!-- Ergebnis -->
+  <div id="result" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="result-title">
+      <h2 id="result-title"></h2>
+      <p id="result-text"></p>
+      <div id="result-facts" class="facts"></div>
+      <div class="dialog-buttons">
+        <button id="btn-result-retry" class="btn">Nochmal versuchen</button>
+        <button id="btn-result-new" class="btn btn-primary">Neues Spiel</button>
+        <button id="btn-result-menu" class="btn btn-ghost">Zum Menü</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bestätigung -->
+  <div id="confirm" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-text">
+      <p id="confirm-text"></p>
+      <div class="dialog-buttons row">
+        <button id="btn-confirm-no" class="btn btn-ghost">Abbrechen</button>
+        <button id="btn-confirm-yes" class="btn btn-primary">Ja</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
