@@ -677,11 +677,10 @@ button svg {
 .game-bubble { display: none; }
 [data-theme="clover"] .game-bubble {
   display: block;
-  position: absolute;
-  top: calc(env(safe-area-inset-top) + 54px);
-  left: 50%;
-  z-index: 5;
-  max-width: 260px;
+  align-self: center;
+  max-width: 100%;
+  min-height: 1.35em;
+  margin-top: 14px;
   padding: 8px 14px;
   border: 3px solid var(--ink);
   border-radius: 18px;
@@ -694,9 +693,14 @@ button svg {
   text-align: center;
   pointer-events: none;
   opacity: 0;
-  transform: translate(-50%, -6px) scale(0.9);
+  transform: translateY(6px) scale(0.9);
   transition: opacity 0.2s, transform 0.2s;
 }
-[data-theme="clover"] .game-bubble.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+[data-theme="clover"] .game-bubble.show { opacity: 1; transform: none; }
 [data-theme="clover"] .game-bubble.bad { background: #ffe1e6; color: #3b2a3f; }
 .reset-images { margin-top: 4px; }
+@media (max-height: 700px) {
+  [data-theme="clover"] .game-bubble { margin-top: 6px; padding: 4px 10px; font-size: 12px; border-width: 2px; }
+  [data-theme="clover"] .board-wrap { margin-bottom: 10px; }
+  [data-theme="clover"] .num { height: 50px; }
+}

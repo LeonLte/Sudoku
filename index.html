@@ -15,7 +15,7 @@
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="preload" href="fonts/mochiy-pop-one.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
   <script>
     // Apply the chosen design before the page is drawn (no flicker).
     try {
@@ -68,7 +68,6 @@
       </button>
     </header>
 
-    <div id="game-bubble" class="game-bubble" aria-live="polite"></div>
     <div class="board-wrap">
       <div id="board" class="board" role="grid" aria-label="Sudoku-Spielfeld"></div>
       <div id="pause-overlay" class="pause-overlay" hidden>
@@ -93,6 +92,7 @@
     </div>
 
     <div id="numpad" class="numpad"></div>
+    <div id="game-bubble" class="game-bubble" aria-live="polite"></div>
   </section>
 
   <!-- Statistiken -->
@@ -169,6 +169,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=6"></script>
+  <script type="module" src="src/app.js?v=7"></script>
 </body>
 </html>
