@@ -13,7 +13,7 @@ Danach startet die App wie eine normale App im Vollbild. Spielstand und Statisti
 - Drei Schwierigkeitsgrade: **leicht**, **mittel**, **schwer**. Jedes Rätsel hat genau eine Lösung.
 - **3 Fehler** erlaubt, beim dritten ist das Spiel vorbei („Nochmal versuchen“ startet dasselbe Rätsel neu).
 - **Hinweise**, wenn man nicht weiterkommt (füllt das gewählte oder das naheliegendste Feld).
-- **Highlighting**: Tippt man auf eine Zahl, leuchten alle gleichen Zahlen auf. Schraffierte Felder zeigen, wo diese Zahl schon blockiert ist. Weiße leere Felder sind die, wo sie noch hin kann.
+- **Highlighting**: Tippt man auf eine Zahl, leuchten alle gleichen Zahlen auf. Die gleichen Zahlen werden dabei dicker dargestellt.
 - Tippt man unten auf eine Zahl, ohne ein leeres Feld gewählt zu haben, wird diese Zahl überall hervorgehoben.
 - **Notizen** (kleine Bleistiftzahlen), werden automatisch entfernt, wenn eine Zahl gesetzt wird.
 - Timer mit **Pause** (pausiert auch automatisch beim Verlassen der App).

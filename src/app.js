@@ -235,6 +235,13 @@ function renderGame() {
     h.blocked = [];
     h.digit = null;
   }
+  if (h.digit) {
+    // Zahl ausgewählt: keine getönten oder schraffierten Felder, nur die gleichen Zahlen
+    // werden dicker.
+    h.related = [];
+    h.blocked = [];
+  }
+  board.classList.toggle('digit-focus', Boolean(h.digit));
   const related = new Set(h.related);
   const same = new Set(h.sameNumber);
   const blocked = new Set(h.blocked);

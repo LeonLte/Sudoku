@@ -713,3 +713,13 @@ button svg {
 /* Zeile, Spalte und Block des gewählten Feldes sehen immer gleich aus,
    egal ob das Feld leer ist oder eine Zahl enthält (keine Schraffur darüber). */
 .cell.related.blocked { background-color: var(--related); background-image: none; }
+
+/* Ausgewählte Zahl: gleiche Zahlen werden dicker.
+   Der Hintergrund bleibt dabei unverändert (nur das gewählte Feld ist markiert). */
+.cell.same { background-color: transparent; }
+.cell.same.selected { background-color: var(--selected); }
+.board.digit-focus .cell.same {
+  font-weight: 800;
+  -webkit-text-stroke: 0.8px currentColor;
+}
+[data-theme="clover"] .board.digit-focus .cell.same { -webkit-text-stroke: 1.8px currentColor; }
